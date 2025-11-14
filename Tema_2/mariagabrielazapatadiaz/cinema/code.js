@@ -3,7 +3,7 @@ const N = 10; // Número de filas y columnas
 
 // Función para inicializar la matriz de butacas
 function setup() {
-    let idContador = 1; // Iniciar el contador de IDs en 1 (los humanos no empezamos a contar desde 0)
+    let idContador = 1; // Iniciar el contador los ID en 1 (los humanos no empezamos a contar desde 0)
     let butacas = [];
 
     for (let i = 0; i < N; i++) {
@@ -53,7 +53,7 @@ function doTable() {
     let html = '<table><tr>';
     //Encabezado
     for (let num = 0; num < N + 1; num++) {
-        if (num == 0)
+        if (num === 0)
             html += "<th></th>";
         else
             html += `<th>${num}</th>`;
