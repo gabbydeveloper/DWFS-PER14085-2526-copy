@@ -26,58 +26,45 @@ let butacas = setup();
 
 //Función para revisar butacas libres
 function suggest(numSeats) {
-    let libres = [], col = N - 1, row = 0, num = 0, dato, coordenada = [];
-    let continuar = true, encontrado = false;
-    if (0 < numSeats <= N) {
-        //Pasa por las columnas
-        while (col >= 0 && continuar) {
-            //Pasa por cada fila hasta encontrar todos
-            row = 0;
-            while (num < numSeats && row < N) {
-                if (!butacas[col][row].estado && num < numSeats) {
-                    coordenada[num] = [col, row];
-                    libres[num] = butacas[col][row].id;
+    if (!(numSeats > 0 && numSeats <= N)) return new Set();
+    let libres = new Set(), encontrado = false;
+    for (let row = N - 1; row >= 0 && !encontrado; row--) {
+        let cont = 0, inicio = 0;
+        for (let col = 0; col < N && !encontrado; col++) {
+            if (!butacas[row][col].estado) {
+                if (++cont === 1) inicio = col;
+                if (cont === numSeats) {
+                    for (let c = inicio; c < inicio + numSeats; c++) libres.add(butacas[row][c].id);
                     encontrado = true;
-                    num++;
                 }
-                row++;
-            }
-            if ((libres.length === numSeats) || ((libres.length < numSeats) && encontrado)) {
-                continuar = false;
-            }
-            col--;
-        }
-        if (libres.length === numSeats) {
-            for (let i = 0; i < coordenada.length; i++) {
-                butacas[coordenada[i][0]][coordenada[i][1]].estado = true;
-            }
+            } else cont = 0;
         }
     }
+    if (!encontrado) return new Set();
+    libres.forEach(id => (butacas.flat().find(a => a.id === id)).estado = true);
     return libres;
 }
 
 //Funciones para el HTML
-
 // Imprimir la tabla
 function doTable() {
     let idContador = 1;
-    let html = '<table><tr>';
     let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
-
+    let html = '<table><tr>';
     //Encabezado
-    for (i = 0; i < N + 1; i++) {
-        if (i == 0)
+    for (let num = 0; num < N + 1; num++) {
+        if (num == 0)
             html += "<th></th>";
         else
-            html += `<th>${i}</th>`;
+            html += `<th>${num}</th>`;
     }
     html += "</tr>";
     //Filas
-    for (i = 0; i < N; i++) {
+    for (let i = 0; i < N; i++) {
         html += "<tr>";
         //Columnas 
         html += `<td class="row">${letras[i]}</td>`;
-        for (j = 0; j < N; j++) {
+        for (let j = 0; j < N; j++) {
             html += `<td><div id="${idContador}" class="free">${idContador}</div></td>`;
             idContador++;
         }
@@ -97,14 +84,14 @@ function writeMessage(message) {
 
 function suggestH() {
     let numSeats = document.getElementById('nro_asientos').value
-    numSeats = parseInt(numSeats) || 0;
+    numSeats = Number.parseInt(numSeats) || 0;
     let libres = suggest(numSeats);
     writeMessage('');
-    if (libres.length === numSeats) {
-        for (let i = 0; i < libres.length; i++) {
-            changeClass(libres[i]);
+    if (libres.size === numSeats) {
+        for (const id of libres) {
+            changeClass(id);
         }
-        writeMessage(libres.toString());
+        writeMessage([...libres]);
     }
     else {
         writeMessage('No se logró el objetivo');

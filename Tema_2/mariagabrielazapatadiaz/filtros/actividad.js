@@ -42,10 +42,10 @@ function redConverter() {
   let outputPath = 'output/tucan_red.jpg';
   let pixels = handler.getPixels();
 
-  for (let i = 0; i < pixels.length; i++) {
-    for (let j = 0; j < pixels[i].length; j++) {
-      pixels[i][j][1] = 0; // Poner canal G a 0
-      pixels[i][j][2] = 0; // Poner canal B a 0
+  for (const matriz of pixels) {
+    for (const pixel of matriz) {
+      pixel[1] = 0; // Poner canal G a 0
+      pixel[2] = 0; // Poner canal B a 0
     }
   }
   handler.savePixels(pixels, outputPath);
@@ -60,10 +60,10 @@ function greenConverter() {
   let outputPath = 'output/tucan_green.jpg';
   let pixels = handler.getPixels();
 
-  for (let i = 0; i < pixels.length; i++) {
-    for (let j = 0; j < pixels[i].length; j++) {
-      pixels[i][j][0] = 0; // Poner canal R a 0
-      pixels[i][j][2] = 0; // Poner canal B a 0
+  for (const matriz of pixels) {
+    for (const pixel of matriz) {
+      pixel[0] = 0; // Poner canal R a 0
+      pixel[2] = 0; // Poner canal B a 0
     }
   }
 
@@ -79,10 +79,10 @@ function blueConverter() {
   let outputPath = 'output/tucan_blue.jpg';
   let pixels = handler.getPixels();
 
-  for (let i = 0; i < pixels.length; i++) {
-    for (let j = 0; j < pixels[i].length; j++) {
-      pixels[i][j][0] = 0; // Poner canal R a 0
-      pixels[i][j][1] = 0; // Poner canal G a 1
+  for (const matriz of pixels) {
+    for (const pixel of matriz) {
+      pixel[0] = 0; // Poner canal R a 0
+      pixel[1] = 0; // Poner canal G a 1
     }
   }
 
@@ -102,11 +102,13 @@ function greyConverter() {
   let outputPath = 'output/tucan_grey.jpg';
   let pixels = handler.getPixels();
 
-  for (let i = 0; i < pixels.length; i++) {
-    for (let j = 0; j < pixels[i].length; j++) {
-      const [a, b, c] = pixels[i][j];
+  for (const matriz of pixels) {
+    for (const pixel of matriz) {
+      const [a, b, c] = pixel;
       const media = Math.floor((a + b + c) / 3);
-      pixels[i][j] = [media, media, media];
+      pixel[0] = media;
+      pixel[1] = media;
+      pixel[2] = media;
     }
   }
 
@@ -124,15 +126,19 @@ function blackAndWhiteConverter() {
   let outputPath = 'output/tucan_black_and_white.jpg';
   let pixels = handler.getPixels();
 
-  for (let i = 0; i < pixels.length; i++) {
-    for (let j = 0; j < pixels[i].length; j++) {
-      const [a, b, c] = pixels[i][j];
+  for (const matriz of pixels) {
+    for (const pixel of matriz) {
+      const [a, b, c] = pixel;
       const media = Math.floor((a + b + c) / 3);
       if (media < 128) {
-        pixels[i][j] = [0, 0, 0];
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
       }
       else {
-        pixels[i][j] = [255, 255, 255];
+        pixel[0] = 255;
+        pixel[1] = 255;
+        pixel[2] = 255;
       }
     }
   }
@@ -179,13 +185,12 @@ function dimBrightness(dimFactor) {
   let outputPath = 'output/tucan_dimed.jpg';
   let pixels = handler.getPixels();
 
-  for (let i = 0; i < pixels.length; i++) {
-    for (let j = 0; j < pixels[i].length; j++) {
-      let [a, b, c] = pixels[i][j];
-      a *= dimFactor;
-      b *= dimFactor;
-      c *= dimFactor;
-      pixels[i][j] = [a, b, c];
+  for (const matriz of pixels) {
+    for (const pixel of matriz) {
+      let [a, b, c] = pixel;
+      pixel[0] = a * dimFactor;
+      pixel[1] = b * dimFactor;
+      pixel[2] = c * dimFactor;
     }
   }
 
@@ -203,10 +208,12 @@ function invertColors() {
   let outputPath = 'output/tucan_inverse.jpg';
   let pixels = handler.getPixels();
 
-  for (let i = 0; i < pixels.length; i++) {
-    for (let j = 0; j < pixels[i].length; j++) {
-      let [a, b, c] = pixels[i][j];
-      pixels[i][j] = [255 - a, 255 - b, 255 - c];
+  for (const matriz of pixels) {
+    for (const pixel of matriz) {
+      let [a, b, c] = pixel;
+      pixel[0] = 255 - a;
+      pixel[1] = 255 - b;
+      pixel[2] = 255 - c;
     }
   }
 
@@ -261,7 +268,7 @@ function merge(alphaFirst, alphaSecond) {
  *     Negativo: 8
  *     Fusion de imagenes: 9
  */
-let optionN = 9;
+let optionN = 7;
 
 switch (optionN) {
   case 1: redConverter(); break;
